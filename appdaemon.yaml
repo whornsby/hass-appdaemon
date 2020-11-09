@@ -1,0 +1,16 @@
+appdaemon:
+  time_zone: America/Los_Angeles
+  latitude: 47.61654
+  longitude: -122.336
+  elevation: 80
+  plugins:
+    HASS:
+      type: hass
+      ha_url: http://192.168.1.200:8123
+      token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI2NTBkZGEyYWRhNjM0NjhjOTM0OGYzZTBjZWJkZDhjNiIsImlhdCI6MTYwNDI5OTM4OCwiZXhwIjoxOTE5NjU5Mzg4fQ.l_K1zIpGRH9zotcADBzKwBFvvBk51aw54khKTqFkQ-8
+
+http:
+    url: http://192.168.1.200:5050
+
+api:
+
