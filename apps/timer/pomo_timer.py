@@ -38,17 +38,21 @@ class PomoTimer(hass.Hass):
         # based off state change of input boolean(or binary sensor)
         # to initiate the callback method
         self.state = self.State.OFF
-        self.handle = self.listen_event(self.cb_run_timer, event=EVENT_NAME, event_type=EVENT_DATA_START)
+        self.handle = self.listen_event(self.cb_start_timer, event=EVENT_NAME, event_type=EVENT_DATA_START)
 
-    # kwargs are necessary due to the way the function is called
-    def cb_run_timer(self, event_name, event_data, kwargs):
-        # Just doing work time and short breaks now
-        # Can implement long breaks later
+    def cb_start_timer(self, event_name, event_data, kwargs):
         try:
             self._process_event_data(event_data)
         except Exception as e:
             self.log("Error while processing event data. Using values specified in app config.")
 
+        # can probably call synchronously but it doesn't really matter here
+        self.run_in(self.cb_start_work_time, 1)
+
+    # kwargs are necessary due to the way the function is called
+    def cb_run_timer(self, kwargs):
+        # Just doing work time and short breaks now
+        # Can implement long breaks later
         if self.cur_rep_count < self.num_short_breaks:
             self.run_in(self.cb_start_work_time, 1)
             self.cur_rep_count -= 1
