@@ -85,22 +85,22 @@ class PomoTimer(hass.Hass):
         if "time" in event_data:
             time_obj = event_data["time"]
             if "work" in time_obj:
-                work_obj = time_obj["work"]
+                work_arr = time_obj["work"]
                 set_work = True
-                h, m, s = work_obj
+                h, m, s = [int(n) for n in work_arr]
                 work_time_data = self._time_to_sec(h, m, s)
             if "short" in time_obj:
-                short_obj = time_obj["short"]
+                short_arr = time_obj["short"]
                 set_short = True
-                h, m, s = short_obj
+                h, m, s = [int(n) for n in short_arr]
                 short_time_data = self._time_to_sec(h, m, s)
         if "cycles" in event_data:
             set_reps = True
-            cycle_data = event_data["cycles"]
+            cycle_data = int(event_data["cycles"])
 
         # No need to wait for all configs since brightness is independent of time (and its last anyways)
         if "brightness" in event_data:
-            self.brightness = event_data["brightness"]
+            self.brightness = int(event_data["brightness"])
 
         # Only set after data has been processed in case of exception
         if set_work: self.work_time = work_time_data
