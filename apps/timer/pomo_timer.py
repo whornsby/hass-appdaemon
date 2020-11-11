@@ -42,10 +42,12 @@ class PomoTimer(hass.Hass):
         self.log("pomo_timer initialized")
 
     def cb_start_timer(self, event_name, event_data, kwargs):
-        # self.original_state = []
-        # for light in self.lights:
-        #     self.original_state.append(self.get_state(light))
         self.log("starting timer")
+        self.original_state = []
+        for light in self.lights:
+            self.original_state.append(self.get_state(light, "all"))
+        self.log([str(x)+"\n" for x in self.original_state])
+        return
         self.log("data recv'd: {}".format(event_data))
         try:
             self._process_event_data(event_data)
