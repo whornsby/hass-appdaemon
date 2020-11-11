@@ -51,7 +51,7 @@ class PomoTimer(hass.Hass):
             self.log("Error while processing event data. Using values specified in app config.")
 
         # can probably call synchronously but it doesn't really matter here
-        self.run_in(self.cb_start_work_time, 1)
+        self.run_in(self.cb_run_timer, 1)
 
     # kwargs are necessary due to the way the function is called
     def cb_run_timer(self, kwargs):
@@ -59,11 +59,12 @@ class PomoTimer(hass.Hass):
         # Can implement long breaks later
         self.log("running timer: {} out of {} reps remaining".format(self.num_short_breaks-self.cur_rep_count, self.num_short_breaks))
         self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
-        if self.cur_rep_count == self.num_short_breaks:
-            self.run_in(self.cb_start_work_time, 1)
+        if self.cur_rep_count < self.num_short_breaks:
             self.cur_rep_count += 1
+            self.run_in(self.cb_start_work_time, 1)
         else:
             # Set lights back to their original state
+            self.log("stopping timer")
             return
 
     # process any event data and replace any default values
