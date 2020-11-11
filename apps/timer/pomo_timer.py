@@ -31,8 +31,13 @@ class PomoTimer(hass.Hass):
         self.short_break_time = self.args["short_break_time"]
         self.num_short_breaks = self.args["num_short_breaks"]
         self.lights = self.args["lights"]
+
+        self.brightness = self.default_brightness
+
         # init short break count
         self.cur_rep_count = 0
+
+
 
         # register start_session with state/event listener
         # based off state change of input boolean(or binary sensor)
@@ -51,6 +56,8 @@ class PomoTimer(hass.Hass):
         except Exception as e:
             self.log("Error while processing event data. Using values specified in app config.")
 
+        self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
+
         # can probably call synchronously but it doesn't really matter here
         self.run_in(self.cb_run_timer, 1)
 
@@ -59,7 +66,6 @@ class PomoTimer(hass.Hass):
         # Just doing work time and short breaks now
         # Can implement long breaks later
         self.log("running timer: {} out of {} reps remaining".format(self.num_short_breaks-self.cur_rep_count, self.num_short_breaks))
-        self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
         if self.cur_rep_count < self.num_short_breaks:
             self.cur_rep_count += 1
             self.run_in(self.cb_start_work_time, 1)
@@ -104,7 +110,7 @@ class PomoTimer(hass.Hass):
         # schedule callback for short break
         self.log("begin work for {} seconds".format(self.work_time))
         for entity in self.lights:
-            self.turn_on(entity, brightness=self.default_brightness, rgb_color=self.default_work_color)
+            self.turn_on(entity, brightness=self.brightness, rgb_color=self.default_work_color)
         self.state = self.State.WORK
         self.handle = self.run_in(self.cb_start_short_break, self.work_time)
 
@@ -113,7 +119,7 @@ class PomoTimer(hass.Hass):
         # schedule callback for session runner
         self.log("begin short break for {} seconds".format(self.short_break_time))
         for entity in self.lights:
-            self.turn_on(entity, brightness=self.default_brightness, rgb_color=self.default_short_break_color)
+            self.turn_on(entity, brightness=self.brightness, rgb_color=self.default_short_break_color)
         self.state = self.State.SHORT_BREAK
         self.handle = self.run_in(self.cb_run_timer, self.short_break_time)
 
