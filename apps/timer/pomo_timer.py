@@ -43,11 +43,9 @@ class PomoTimer(hass.Hass):
 
     def cb_start_timer(self, event_name, event_data, kwargs):
         self.log("starting timer")
-        self.original_state = []
+        self.original_state = {}
         for light in self.lights:
-            self.original_state.append(self.get_state(light, "all"))
-        self.log([str(x)+"\n" for x in self.original_state])
-        return
+            self.original_state[light] = self.get_state(light, "all")
         self.log("data recv'd: {}".format(event_data))
         try:
             self._process_event_data(event_data)
@@ -72,6 +70,11 @@ class PomoTimer(hass.Hass):
             self.run_in(self.cb_start_work_time, 1)
         else:
             # Set lights back to their original state
+            self.log("resetting lights")
+            for light in self.lights:
+                attributes = self.original_state[light]["attributes"]
+                self.log("Turning on {} with brightness: and rgb_color: {}\n\tall attrs: {}".format(attributes["brightness"],attributes["rgb_color"],attributes))
+                self.turn_on(light, brightness=attributes["brightness"],rgb_color=attributes["rgb_color"])
             self.log("stopping timer")
             return
 
