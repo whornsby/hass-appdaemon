@@ -77,7 +77,7 @@ class PomoTimer(hass.Hass):
         if set_work: self.work_time = work_time_data
         if set_short: self.short_break_time = short_time_data
 
-    def cb_start_work_time(self):
+    def cb_start_work_time(self, kwargs):
         # set lights as needed
         # schedule callback for short break
         for entity in self.lights:
@@ -85,7 +85,7 @@ class PomoTimer(hass.Hass):
         self.state = self.State.WORK
         self.handle = self.run_in(self.cb_start_short_break, self.work_time)
 
-    def cb_start_short_break(self):
+    def cb_start_short_break(self, kwargs):
         # set lights as needed
         # schedule callback for session runner
         for entity in self.lights:
