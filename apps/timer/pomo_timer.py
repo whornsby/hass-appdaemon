@@ -126,7 +126,7 @@ class PomoTimer(hass.Hass):
         self.handle = self.run_in(self.cb_run_timer, self.short_break_time)
 
     def _time_to_sec(self, h, m, s):
-        return s + 60 * m + 3600 * h
+        return int(s) + 60 * int(m) + 3600 * int(h)
 
     class State(Enum):
         OFF = 0,
