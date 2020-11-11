@@ -44,6 +44,7 @@ class PomoTimer(hass.Hass):
         # self.original_state = []
         # for light in self.lights:
         #     self.original_state.append(self.get_state(light))
+        self.log("starting timer")
         try:
             self._process_event_data(event_data)
         except Exception as e:
@@ -56,6 +57,8 @@ class PomoTimer(hass.Hass):
     def cb_run_timer(self, kwargs):
         # Just doing work time and short breaks now
         # Can implement long breaks later
+        self.log("running timer: {} out of {} reps remaining".format(self.num_short_breaks-self.cur_rep_count, self.num_short_breaks))
+        self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
         if self.cur_rep_count == self.num_short_breaks:
             self.run_in(self.cb_start_work_time, 1)
             self.cur_rep_count += 1
@@ -87,6 +90,7 @@ class PomoTimer(hass.Hass):
     def cb_start_work_time(self, kwargs):
         # set lights as needed
         # schedule callback for short break
+        self.log("begin work for {} seconds".format(self.work_time))
         for entity in self.lights:
             self.turn_on(entity, brightness=self.default_brightness, rgb_color=self.default_work_color)
         self.state = self.State.WORK
@@ -95,6 +99,7 @@ class PomoTimer(hass.Hass):
     def cb_start_short_break(self, kwargs):
         # set lights as needed
         # schedule callback for session runner
+        self.log("begin short break for {} seconds".format(self.short_break_time))
         for entity in self.lights:
             self.turn_on(entity, brightness=self.default_brightness, rgb_color=self.default_short_break_color)
         self.state = self.State.SHORT_BREAK
