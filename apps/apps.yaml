@@ -1,4 +1,8 @@
-hello_world:
-  module: hello
-  class: HelloWorld
+pomo_timer:
+  module: pomo_timer
+  class: PomoTimer
+  work_time: 5
+  short_break_time: 2
+  num_short_breaks: 5
+  lights: [lights.will_desk]
 
