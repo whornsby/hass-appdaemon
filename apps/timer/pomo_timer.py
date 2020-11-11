@@ -39,6 +39,7 @@ class PomoTimer(hass.Hass):
         # to initiate the callback method
         self.state = self.State.OFF
         self.handle = self.listen_event(self.cb_start_timer, event=EVENT_NAME, event_type=EVENT_DATA_START)
+        self.log("pomo_timer initialized")
 
     def cb_start_timer(self, event_name, event_data, kwargs):
         # self.original_state = []
@@ -71,22 +72,32 @@ class PomoTimer(hass.Hass):
     def _process_event_data(self, event_data):
         set_work = False
         set_short = False
-        time_obj = event_data["time"]
-        if time_obj:
-            work_obj = time_obj["work"]
-            short_obj = time_obj["short"]
-            if work_obj:
+        set_reps = False
+
+        if "time" in event_data:
+            time_obj = event_data["time"]
+            if "work" in time_obj:
+                work_obj = time_obj["work"]
                 set_work = True
                 h, m, s = work_obj
                 work_time_data = self._time_to_sec(h, m, s)
-            if short_obj:
+            if "short" in time_obj:
+                short_obj = time_obj["short"]
                 set_short = True
                 h, m, s = short_obj
                 short_time_data = self._time_to_sec(h, m, s)
+        if "cycles" in event_data:
+            set_reps = True
+            cycle_data = event_data["cycles"]
+
+        # No need to wait for all configs since brightness is independent of time (and its last anyways)
+        if "brightness" in event_data:
+            self.brightness = event_data["brightness"]
 
         # Only set after data has been processed in case of exception
         if set_work: self.work_time = work_time_data
         if set_short: self.short_break_time = short_time_data
+        if set_reps: self.num_short_breaks = cycle_data
 
     def cb_start_work_time(self, kwargs):
         # set lights as needed
