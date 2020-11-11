@@ -41,6 +41,9 @@ class PomoTimer(hass.Hass):
         self.handle = self.listen_event(self.cb_start_timer, event=EVENT_NAME, event_type=EVENT_DATA_START)
 
     def cb_start_timer(self, event_name, event_data, kwargs):
+        self.original_state = []
+        for light in self.lights:
+            self.original_state.append(self.get_state(light))
         try:
             self._process_event_data(event_data)
         except Exception as e:
@@ -53,11 +56,11 @@ class PomoTimer(hass.Hass):
     def cb_run_timer(self, kwargs):
         # Just doing work time and short breaks now
         # Can implement long breaks later
-        if self.cur_rep_count < self.num_short_breaks:
+        if self.cur_rep_count == self.num_short_breaks:
             self.run_in(self.cb_start_work_time, 1)
-            self.cur_rep_count -= 1
+            self.cur_rep_count += 1
         else:
-            # Exiting
+            # Set lights back to their original state
             return
 
     # process any event data and replace any default values
