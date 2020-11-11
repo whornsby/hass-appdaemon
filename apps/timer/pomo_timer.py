@@ -54,7 +54,9 @@ class PomoTimer(hass.Hass):
         try:
             self._process_event_data(event_data)
         except Exception as e:
-            self.log("Error while processing event data. Using values specified in app config.")
+            self.log("Bad data: {}".format(event_data))
+            self.log("Error while processing event data: {}".format(e))
+            self.log("Using values specified in app config.")
 
         self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
 
