@@ -34,11 +34,6 @@ class PomoTimer(hass.Hass):
 
         self.brightness = self.default_brightness
 
-        # init short break count
-        self.cur_rep_count = 0
-
-
-
         # register start_session with state/event listener
         # based off state change of input boolean(or binary sensor)
         # to initiate the callback method
@@ -58,6 +53,8 @@ class PomoTimer(hass.Hass):
             self.log("Error while processing event data: {}".format(e))
             self.log("Using values specified in app config.")
 
+        # init short break count
+        self.cur_rep_count = 0
         self.log("time: work: {} seconds; short: {} seconds".format(self.work_time, self.short_break_time))
 
         # can probably call synchronously but it doesn't really matter here
