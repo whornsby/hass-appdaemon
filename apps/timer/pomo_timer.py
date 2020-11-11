@@ -51,7 +51,7 @@ class PomoTimer(hass.Hass):
         # for light in self.lights:
         #     self.original_state.append(self.get_state(light))
         self.log("starting timer")
-        self.log("data recv'd: {}".format(event_data), level="DEBUG")
+        self.log("data recv'd: {}".format(event_data))
         try:
             self._process_event_data(event_data)
         except Exception as e:
