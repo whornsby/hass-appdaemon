@@ -41,9 +41,9 @@ class PomoTimer(hass.Hass):
         self.handle = self.listen_event(self.cb_start_timer, event=EVENT_NAME, event_type=EVENT_DATA_START)
 
     def cb_start_timer(self, event_name, event_data, kwargs):
-        self.original_state = []
-        for light in self.lights:
-            self.original_state.append(self.get_state(light))
+        # self.original_state = []
+        # for light in self.lights:
+        #     self.original_state.append(self.get_state(light))
         try:
             self._process_event_data(event_data)
         except Exception as e:
