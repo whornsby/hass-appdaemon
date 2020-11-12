@@ -46,6 +46,7 @@ class PomoTimer(hass.Hass):
         self.original_state = {}
         for light in self.lights:
             self.original_state[light] = self.get_state(light, "all")
+        self.log(str([str(s)+"\n" for s in self.original_state]))
         self.log("data recv'd: {}".format(event_data))
         try:
             self._process_event_data(event_data)
